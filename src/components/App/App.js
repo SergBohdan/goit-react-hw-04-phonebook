@@ -13,7 +13,10 @@ const defaultContacts = [
 ];
 
 function App() {
-  const [contacts, setContacts] = useState(defaultContacts);
+  const localStorageContacts =
+    JSON.parse(localStorage.getItem('contacts')) || defaultContacts;
+
+  const [contacts, setContacts] = useState(localStorageContacts);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
@@ -21,7 +24,11 @@ function App() {
   }, [contacts]);
 
   const addContact = (name, number) => {
-    if (contacts.some((contact) => contact.name.toLowerCase() === name.toLowerCase())) {
+    if (
+      contacts.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
       alert(`${name} is already in contacts.`);
       return;
     }
@@ -32,23 +39,25 @@ function App() {
       number,
     };
 
-    setContacts((prevContacts) => [...prevContacts, newContact]);
+    setContacts(prevContacts => [...prevContacts, newContact]);
   };
 
-  const deleteContact = (contactId) => {
-    setContacts((prevContacts) => prevContacts.filter((contact) => contact.id !== contactId));
+  const deleteContact = contactId => {
+    setContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== contactId)
+    );
   };
 
   const clearContacts = () => {
     setContacts(defaultContacts);
   };
 
-  const handleFilterChange = (evt) => {
+  const handleFilterChange = evt => {
     setFilter(evt.target.value);
   };
 
   const getFilteredContacts = () => {
-    return contacts.filter((contact) =>
+    return contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
